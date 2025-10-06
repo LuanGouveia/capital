@@ -27,7 +27,7 @@
 <script>
     export default {
 
-        name: "ExpenseForm",
+        name: "RegisterForm",
 
         data() {
             return {

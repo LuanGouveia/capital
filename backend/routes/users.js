@@ -1,16 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const pool = require('../database/db');
-
-router.use((req, res, next) => {
-  console.log("Body recebido no middleware:", req.body);
-  next();
-});
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 router.post('/register',async function (req, res, next) {
 
@@ -22,11 +14,14 @@ router.post('/register',async function (req, res, next) {
 
   try{
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     console.log("Recebido para cadastro:", req.body);
 
     const[result] = await pool.execute (
       "insert into users(username, email, password) values (?,?,?)",
-      [username,email,password]
+      [username,email, hashedPassword]
     );
 
     console.log("cadastro confirmado! ID inserido:", result.insertId);
@@ -36,6 +31,46 @@ router.post('/register',async function (req, res, next) {
   }catch(error){
     console.error("Erro ao cadastrar:", error);
     res.status(500).json({error: "Erro ao cadastrar usuário"});
+  }
+});
+
+router.post('/login', async function(req, res, next) {
+
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email e senha são obrigatórios" });
+  }
+
+  try {
+    const [rows] = await pool.execute(
+      "select * from users where email = ?",
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: "Credenciais inválidas" });
+    }
+
+    const user = rows[0];
+    
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Credenciais inválidas" });
+    }
+
+    const token = jwt.sign(
+      { userId: user.userid, username: user.username },
+      'seu_segredo_aqui',
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ message: "Login bem-sucedido", token });
+    
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+    res.status(500).json({ error: "Erro ao fazer login" });
   }
 });
 

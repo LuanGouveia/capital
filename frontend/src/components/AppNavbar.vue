@@ -14,14 +14,14 @@
 
             <div class="navbar-start">
                 
-                <router-link to="/Home" class="navbar-item capital">CAPITAL</router-link>
+                <router-link to="/" class="navbar-item capital">CAPITAL</router-link>
 
             </div>  
 
             <div class="navbar-end">
 
-                <router-link to="/Management" class="navbar-item">Management</router-link>
-                <router-link to="/Login" class="navbar-item">Login</router-link>
+                <router-link to="/management" class="navbar-item">Management</router-link>
+                <router-link to="/login" class="navbar-item">Login</router-link>
                 <router-link to="/register" class="navbar-item">Register</router-link>
 
             </div>

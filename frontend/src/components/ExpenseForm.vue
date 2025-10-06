@@ -1,81 +1,84 @@
 <template>
 
-    <form @submit.prevent="addExpense">
+    <div class="formexpense">
+        <form @submit.prevent="addExpense">
 
-        <div class="field">
+            <div class="field">
 
-            <div class="control switch-container">
+                <div class="control switch-container">
 
-                <label class="switch">
+                    <label class="switch">
 
-                    <input type="checkbox" v-model="isProfit">
+                        <input type="checkbox" v-model="isProfit">
 
-                    <span class="slider">
-                        <span class="slider-inner">
-                            <span class="state spent">Spent</span>
-                            <span class="state profit">Profit</span>
+                        <span class="slider">
+                            <span class="slider-inner">
+                                <span class="state spent">Spent</span>
+                                <span class="state profit">Profit</span>
+                            </span>
                         </span>
-                    </span>
 
-                </label>
+                    </label>
+
+                </div>
 
             </div>
 
-        </div>
+            <div class="field">
 
-        <div class="field">
+                <label class="label">Value</label>
 
-            <label class="label">Value</label>
+                <div class="control">
+                    <input type="number" placeholder="Enter the value" required v-model="value" />
+                </div>
 
-            <div class="control">
-                <input type="text" placeholder="Enter the value" required v-model="value" />
             </div>
 
-        </div>
+            <div class="field">
 
-        <div class="field">
+                <div class="control">
+                    <input type="radio" name="radiotype" id="radiotype" value="Regular" v-model="radiotype" /> Regular
+                    <input type="radio" name="radiotype" id="radiotype" value="Occasional" v-model="radiotype" /> Occasional
+                </div>
 
-            <div class="control">
-                <input type="radio" name="radiotype" id="radiotype" value="Fixo" v-model="radiotype" /> Fixo
-                <input type="radio" name="radiotype" id="radiotype" value="Variavel" v-model="radiotype" /> Variavel
             </div>
 
-        </div>
+            <div class="field">
 
-        <div class="field">
+                <label class="label">Category</label> 
+                <div class="control">
+                    <select name="forma" id="forma" v-model="category" required>
+                        <option value="Lazer">Lazer</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Saúde">Saúde</option>
+                        <option value="Educação">Educação</option>
+                        <option value="Contas">Contas</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
 
-            <label class="label">Forma</label>
-            <div class="control">
-                <select name="forma" id="forma" v-model="category" required>
-                    <option value="Lazer">Lazer</option>
-                    <option value="Transporte">Transporte</option>
-                    <option value="Saúde">Saúde</option>
-                    <option value="Educação">Educação</option>
-                    <option value="Contas">Contas</option>
-                    <option value="Outros">Outros</option>
-                </select>
             </div>
 
-        </div>
+            <div class="field">
 
-        <div class="field">
+                <div class="control">
+                    <label for="desc">Describe your spent/profit</label>
+                    <input type="text" name="desc" id="desc" placeholder="Description" required v-model="desc" />
+                </div>
 
-            <div class="control">
-                <label for="desc">Descreva seu gasto/lucro</label>
-                <input type="text" name="desc" id="desc" placeholder="Descrição" required v-model="desc" />
             </div>
 
-        </div>
+            <div class="field">
 
-        <div class="field">
+                <div class="control">
+                    <button class="button is-primary">Add</button>
+                </div>
 
-            <div class="control">
-                <button class="button is-primary">Add</button>
             </div>
 
-        </div>
-
-    </form>
+        </form>
+    </div>
+    
 
 </template>
 
@@ -95,10 +98,13 @@
         },
 
         methods: {
-            addExpense() {
+            async addExpense() {
+
+                const token = localStorage.getItem('token');
+
                 const expense = {
+                    profitOrSpent: this.isProfit,
                     value: this.value,
-                    profit: this.isProfit,
                     type: this.radiotype,
                     category: this.category,
                     desc: this.desc
@@ -111,6 +117,28 @@
                 this.radiotype = '';
                 this.category = '';
                 this.desc = '';
+
+                try {
+                    const response = await fetch('http://localhost:3000/balance/addValue', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify(expense)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const responseData = await response.json();
+                    console.log('Server response:', responseData);
+
+                } catch (error) {
+                    console.error('Error adding expense:', error);
+                    alert('Failed to add expense. Please try again.');
+                }
             }
         }
     };
@@ -187,4 +215,53 @@
         outline-offset: 2px;
         box-shadow: 0 0 0 3px rgba(39,174,96,0.12);
     }
+
+    .formexpense {
+        max-width: 400px;
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    input[type="text"] {
+  width: 250px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none; 
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  background-color: #f9f9f9;
+}
+option {
+  padding: 10px;
+}
 </style>
