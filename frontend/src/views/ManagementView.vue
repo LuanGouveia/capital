@@ -11,22 +11,30 @@ export default {
         ExpenseForm,
         ExpenseChart
     },
+
     setup(props) {
+
         const expenses = ref([]);
 
         const fetchExpenses = async () => {
+
             try {
+
                 const token = localStorage.getItem('token');
+
                 const response = await fetch('http://localhost:3000/balance/getExpenses', {
                     headers: {
                         'Content-Type': 'application/json',
                         authorization: `Bearer ${token}`
                     }
                 });
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch expenses');
                 }
+
                 expenses.value = await response.json();
+                
             } catch (error) {
                 console.error('Error fetching expenses:', error);
             }

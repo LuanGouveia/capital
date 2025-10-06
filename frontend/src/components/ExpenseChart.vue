@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, watch } from 'vue';
     import { Chart, registerables } from 'chart.js';
 
     Chart.register(...registerables);
@@ -21,10 +21,15 @@
         name: "ExpenseChart",
 
         props: {
+
             expenses: {
+
                 type: Array,
+
                 required: true
+
             }
+
         },
 
         setup(props) {
@@ -33,10 +38,16 @@
             let chartInstance = null;
 
             const createChart = () => {
+
                 const ctx = chartCanvas.value.getContext('2d');
                 
-                const profitData = props.expenses.filter(e => e.profitOrSpent).reduce((sum, e) => sum + parseFloat(e.value), 0);
-                const spentData = props.expenses.filter(e => !e.profitOrSpent).reduce((sum, e) => sum + parseFloat(e.value), 0);
+                const profitData = props.expenses
+                    .filter(e => e.profitOrSpent)
+                    .reduce((sum, e) => sum + parseFloat(e.value), 0);
+
+                const spentData = props.expenses
+                    .filter(e => !e.profitOrSpent)
+                    .reduce((sum, e) => sum + parseFloat(e.value), 0);
 
                 if (chartInstance) {
                     chartInstance.destroy();
@@ -45,32 +56,46 @@
                 chartInstance = new Chart(ctx, {
 
                     type: 'doughnut',
-                    
+
                     data: {
+
                         labels: ['Profit', 'Spent'],
+
                         datasets: [{
+
                             data: [profitData, spentData],
                             backgroundColor: ['#4caf50', '#f44336']
+
                         }]
+
                     },
+
                     options: {
+
                         responsive: true,
+
                         plugins: {
+
                             legend: {
                                 position: 'top',
                             },
+
                             title: {
                                 display: true,
                                 text: 'Profit vs Spent'
                             }
+
                         }
                     }
+
                 });
             };
 
             onMounted(() => {
                 createChart();
             });
+
+            watch(() => props.expenses, createChart, { deep: true });
 
             return {
                 chartCanvas
