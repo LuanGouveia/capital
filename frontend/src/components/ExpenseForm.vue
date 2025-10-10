@@ -1,7 +1,7 @@
 <template>
 
     <div class="formexpense">
-        <form @submit.prevent="addExpense">
+        <form @submit.prevent="addExpense()">
 
             <div class="field">
 
@@ -253,43 +253,44 @@
     }
 
     input[type="text"] {
-  width: 250px;
-  height: 40px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  color: #333;
-  background-color: #f9f9f9;
-}
+        width: 250px;
+        height: 40px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #333;
+        background-color: #f9f9f9;
+    }
 
-input[type="text"]:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none; 
-}
+    input[type="text"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        outline: none; 
+    }
 
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
 
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  color: #333;
-  background-color: #f9f9f9;
-}
-option {
-  padding: 10px;
-}
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        color: #333;
+        background-color: #f9f9f9;
+    }
+
+    option {
+        padding: 10px;
+    }
 </style>

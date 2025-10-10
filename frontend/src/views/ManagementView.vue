@@ -22,7 +22,7 @@ export default {
 
                 const token = localStorage.getItem('token');
 
-                const response = await fetch('http://localhost:3000/balance/getExpenses', {
+                const response = await fetch('http://localhost:3000/balance/getValues', {
                     headers: {
                         'Content-Type': 'application/json',
                         authorization: `Bearer ${token}`
@@ -63,7 +63,7 @@ export default {
 
         <div class="form-container">
 
-            <ExpenseForm @expense-added="addExpenseToList" />
+            <ExpenseForm @addExpense="addExpenseToList" />
 
         </div>
 
@@ -80,14 +80,16 @@ export default {
 <style scoped>
     .management-view {
         display: flex;
-        gap: 20px;           /* separa form e chart */
-        margin-top: 20px;    /* espaço para a Navbar */
-        position: relative;  /* garante que z-index funcione corretamente */
+        width: 100%;
+        height: 100vh;
+        background-color: rgb(1, 11, 5);
     }
 
-.form-container, .chart-container {
-  flex: 1;
-  position: relative;  /* não cobre a Navbar */
-  z-index: 0;
-}
+    .form-container {
+        width: 40%;
+    }
+
+    .chart-container {
+        width: 60%;
+    }
 </style>

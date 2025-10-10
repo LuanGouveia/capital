@@ -1,5 +1,5 @@
 <template>
-    <div class="expense-chart">
+    <div class="balance-chart">
 
         <h2>Spent's/Profit's Resume</h2>
 
@@ -18,14 +18,13 @@
     
     export default {
 
-        name: "ExpenseChart",
+        name: "BalanceChart",
 
         props: {
 
             expenses: {
 
-                type: Array,
-
+                type: Object,
                 required: true
 
             }
@@ -40,31 +39,29 @@
             const createChart = () => {
 
                 const ctx = chartCanvas.value.getContext('2d');
-                
-                const profitData = props.expenses
-                    .filter(e => e.profitOrSpent)
-                    .reduce((sum, e) => sum + parseFloat(e.value), 0);
 
-                const spentData = props.expenses
-                    .filter(e => !e.profitOrSpent)
-                    .reduce((sum, e) => sum + parseFloat(e.value), 0);
+                if (chartInstance) {chartInstance.destroy();}
 
-                if (chartInstance) {
-                    chartInstance.destroy();
-                }
+                const datalist = props.expenses.combineddata || [];
+                const labels = datalist.map((_, index) => `Value ${index + 1}`);
+                const data = datalist.map(entry => parseFloat(entry.value));
+                const pointColors = datalist.map(entry => entry.value >= 0 ? '#4caf50' : '#f44336');
 
                 chartInstance = new Chart(ctx, {
 
-                    type: 'doughnut',
+                    type: 'line',
 
                     data: {
-
-                        labels: ['Profit', 'Spent'],
-
+                        labels,
                         datasets: [{
 
-                            data: [profitData, spentData],
-                            backgroundColor: ['#4caf50', '#f44336']
+                            label: 'financial flow',
+                            data,
+                            backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                            tension: 0.1,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: pointColors
 
                         }]
 
@@ -73,17 +70,19 @@
                     options: {
 
                         responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
 
                         plugins: {
 
                             legend: {
                                 position: 'top',
                             },
-
-                            title: {
-                                display: true,
-                                text: 'Profit vs Spent'
-                            }
 
                         }
                     }
@@ -105,20 +104,23 @@
 </script>
 
 <style scoped>
-    .expense-chart {
-        width: 400px;
-        height: 400px;
-        background-color: #792f2f;
-        border-radius: 16px;
-        padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+    .balance-chart {
+        width: 100%;
+        color: white;
+        height: 100%;
+
     }
 
     .chart-container {
-        background-color: #3d3131;
-        position: relative;
+        background-color: #3d3131;  
+        width: 95%;
+        height: 70%;
+        border-radius: 8px;
+    }
+
+    canvas {
         width: 100%;
-        max-width: 600px;
-        margin: auto;
+        height: 100%;
     }
 </style>

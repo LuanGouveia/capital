@@ -50,12 +50,32 @@ router.post("/addValue", authenticateToken, async function (req, res, next) {
     }
 });
 
-router.get("/getValue", authenticateToken, async function (req, res, next) {
-    const userId = req.user.userId;
+router.get("/getValues", authenticateToken, async function (req, res, next) {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+        return res.status(400).json({ error: "ID do usuário é obrigatório" });
+    }
 
     try {
         const [rows] = await pool.execute("SELECT * FROM balance WHERE userId = ?", [userId]);
-        res.status(200).json(rows);
+
+        const combineddata = [];
+        rows.forEach((row) => {
+            combineddata.push({
+                profitorexpense: row.profitorexpense,
+                value: row.profitorexpense == "profit" ? parseFloat(row.value) : parseFloat(row.value) * -1,
+            });
+        });
+
+        const user_infos = {
+            userId: req.user.userId,
+            combineddata,
+        };
+
+        console.log("Valores buscados para o usuário:", user_infos);
+
+        res.status(200).json(user_infos);
     } catch (error) {
         console.error("Erro ao buscar valores:", error);
         res.status(500).json({ error: "Erro ao buscar valores" });
