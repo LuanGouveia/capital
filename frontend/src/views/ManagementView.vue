@@ -12,9 +12,9 @@ export default {
         ExpenseChart
     },
 
-    setup(props) {
+    setup() {
 
-        const expenses = ref([]);
+        const expenses = ref([]); 
 
         const fetchExpenses = async () => {
 
@@ -40,13 +40,13 @@ export default {
             }
         };
 
+         const addExpenseToList = (newExpense) => {
+            expenses.value.push(newExpense);
+        };
+
         onMounted(() => {
             fetchExpenses();
         });
-
-        const addExpenseToList = (newExpense) => {
-            expenses.value.push(newExpense);
-        };
 
         return {
             expenses,

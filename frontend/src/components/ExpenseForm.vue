@@ -12,9 +12,9 @@
                         <input type="checkbox" v-model="isProfit">
 
                         <span class="slider">
-                            <span class="slider-inner">
-                                <span class="state spent">Spent</span>
-                                <span class="state profit">Profit</span>
+                            <span class="slider-inner" >
+                                <span class="state spent">expense</span>
+                                <span class="state profit">profit</span>
                             </span>
                         </span>
 
@@ -37,8 +37,8 @@
             <div class="field">
 
                 <div class="control">
-                    <input type="radio" name="radiotype" id="radiotype" value="Regular" v-model="radiotype" /> Regular
-                    <input type="radio" name="radiotype" id="radiotype" value="Occasional" v-model="radiotype" /> Occasional
+                    <input type="radio" name="expenseType" id="expenseType1" value="Fixed" v-model="expenseType" /> Fixed
+                    <input type="radio" name="expenseType" id="expenseType2" value="Occasional" v-model="expenseType" /> Occasional
                 </div>
 
             </div>
@@ -89,9 +89,9 @@
 
         data() {
             return {
-                isProfit: true,
+                isProfit: "",
                 value: '',
-                radiotype: '',
+                expenseType: '',
                 category: '',
                 desc: ''
             };
@@ -101,39 +101,67 @@
             async addExpense() {
 
                 const token = localStorage.getItem('token');
+                console.log('Using token:', token);
+
+                if (!token) {
+                    throw new Error('No token found, user might not be authenticated');
+                }
+
+                let profitOrSpent = this.isProfit;
+                let expenseType = this.expenseType;
+
+                if (profitOrSpent){
+                    profitOrSpent = 'profit';
+                } else {
+                    profitOrSpent = 'expense';
+                }
+
+                if (expenseType){
+                    expenseType = 'Fixed';
+                } else {
+                    expenseType = 'Occasional';
+                }
 
                 const expense = {
-                    profitOrSpent: this.isProfit,
+                    profitorexpense: profitOrSpent,
                     value: this.value,
-                    type: this.radiotype,
+                    expenseType: this.expenseType,
                     category: this.category,
                     desc: this.desc
                 };
 
                 console.log('Expense added:', expense);
 
-                // Clear form fields after submission
                 this.value = '';
                 this.radiotype = '';
                 this.category = '';
                 this.desc = '';
 
                 try {
+
+                    if (!token) {
+                        throw new Error('No token found, user might not be authenticated');
+                    }
+
                     const response = await fetch('http://localhost:3000/balance/addValue', {
+
                         method: 'POST',
+
                         headers: {
                             'Content-Type': 'application/json',
                             authorization: `Bearer ${token}`
                         },
+
                         body: JSON.stringify(expense)
                     });
 
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Error adding expense-profit / submitting form');
                     }
 
                     const responseData = await response.json();
                     console.log('Server response:', responseData);
+                    this.$emit('expense-added', responseData);
 
                 } catch (error) {
                     console.error('Error adding expense:', error);
