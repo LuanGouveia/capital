@@ -13,8 +13,8 @@
 
                         <span class="slider">
                             <span class="slider-inner" >
-                                <span class="state spent">expense</span>
-                                <span class="state profit">profit</span>
+                                <span class="state spent">EXPENSE</span>
+                                <span class="state profit">PROFIT</span>
                             </span>
                         </span>
 
@@ -24,25 +24,34 @@
 
             </div>
 
-            <div class="field">
+            <div class="firstsection">
 
-                <label class="label">Value</label>
+                <div class="field">
 
-                <div class="control">
-                    <input type="number" placeholder="Enter the value" required v-model="value" />
+                    <label class="label number">VALUE:</label>
+
+                    <div class="control number-input">
+                        <span>$</span>
+                        <input type="number" required v-model="value" />
+                    </div>
+
+                </div>
+
+                <div class="field">
+
+                    <div class="control radio-input">
+                        <div>
+                            <input type="radio" name="expenseType" id="expenseType1" value="Fixed" v-model="expenseType" /> Fixed
+                        </div>
+                        <div>
+                            <input type="radio" name="expenseType" id="expenseType2" value="Occasional" v-model="expenseType" /> Occasional
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
-
-            <div class="field">
-
-                <div class="control">
-                    <input type="radio" name="expenseType" id="expenseType1" value="Fixed" v-model="expenseType" /> Fixed
-                    <input type="radio" name="expenseType" id="expenseType2" value="Occasional" v-model="expenseType" /> Occasional
-                </div>
-
-            </div>
-
+  
             <div class="field">
 
                 <label class="label">Category</label> 
@@ -182,8 +191,8 @@
     .switch {
         position: relative;
         display: inline-block;
-        width: 150px;
-        height: 40px;
+        width: 400px;
+        height: 50px;
         position: relative;
         cursor: pointer;
     }
@@ -211,7 +220,7 @@
         width: 200%;
         height: 100%;
         transform: translateX(0);
-        transition: transform 0.32s cubic-bezier(.2,.9,.2,.1);
+        transition: transform 0.32s;
     }
 
     .state{
@@ -219,9 +228,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 14px;
+        color: black;
+        font-weight: 1000;
+        font-size: 28px;
+        text-transform: uppercase;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         height: 100%;
         box-sizing: border-box;
     }
@@ -245,11 +256,15 @@
     }
 
     .formexpense {
-        max-width: 400px;
+        width: 100%;
+        height: 100%;
         padding: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f9f9f9;
+        color: white;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     input[type="text"] {
@@ -281,7 +296,7 @@
     }
 
     select {
-        width: 100%;
+        width: 6rem;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -293,4 +308,67 @@
     option {
         padding: 10px;
     }
+
+    input[type="number"] {
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s; 
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-left: 5px;
+        width: 150px;
+        height: 40px;
+    }
+
+    input[type="number"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        outline: none; 
+    }
+
+    input[type="number"]::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    .number-input {
+        position: relative;
+        display: inline-block;
+    }
+
+    .number-input span {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #555;
+        font-size: 1.2rem;
+        pointer-events: none; 
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .firstsection {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    .radio-input {
+        display: flex;
+        gap: 5px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        flex-direction: column;
+
+    }
+    .number {
+        font-size: 1.4rem;
+        font-weight: 300;
+    }
+
 </style>

@@ -123,4 +123,14 @@
         width: 100%;
         height: 100%;
     }
+
+    h2 {
+        text-align: right;
+        margin-bottom: 1rem;
+        margin-right: 4rem;
+        font-weight: 600;
+        font-size: 1.5rem;
+        color: white;
+        text-shadow: 1px 1px 2px black;
+    }
 </style>
