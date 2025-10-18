@@ -1,7 +1,7 @@
 <template>
     <div class="balance-chart">
 
-        <h2>Spent's/Profit's Resume</h2>
+        <h2>Spent's/Profit's Summary</h2>
 
         <div class="chart-container">
             <canvas ref="chartCanvas"></canvas>
@@ -33,6 +33,8 @@
 
         setup(props) {
 
+            let pointColors = []
+
             const chartCanvas = ref(null);
             let chartInstance = null;
 
@@ -40,12 +42,28 @@
 
                 const ctx = chartCanvas.value.getContext('2d');
 
-                if (chartInstance) {chartInstance.destroy();}
-
                 const datalist = props.expenses.combineddata || [];
+
                 const labels = datalist.map((_, index) => `Value ${index + 1}`);
+                
                 const data = datalist.map(entry => parseFloat(entry.value));
-                const pointColors = datalist.map(entry => entry.value >= 0 ? '#4caf50' : '#f44336');
+                let processedData = [];
+                let balancedData = 0;
+                for (let i = 0; i < data.length; i++) {
+                    balancedData = balancedData + data[i];
+                    processedData = processedData.concat(balancedData);
+                }
+
+                pointColors = []
+                for (let i = 0 ; i < processedData.length ; i++){
+                    if(processedData[i] >= 0){
+                        pointColors.push("#4caf50")
+                    }
+                    else{
+                        pointColors.push("#f44336")
+                    }
+                }
+
 
                 chartInstance = new Chart(ctx, {
 
@@ -56,12 +74,12 @@
                         datasets: [{
 
                             label: 'financial flow',
-                            data,
+                            data: processedData,
                             backgroundColor: 'rgba(33, 150, 243, 0.2)',
-                            tension: 0.1,
-                            pointRadius: 5,
+                            tension: 0.3,
+                            pointRadius: 4,
                             pointHoverRadius: 7,
-                            pointBackgroundColor: pointColors
+                            pointBackgroundColor: pointColors,
 
                         }]
 
@@ -71,6 +89,10 @@
 
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: {
+                            duration: 800,
+                            easing: 'linear'
+                        },
 
                         scales: {
                             y: {
@@ -90,11 +112,35 @@
                 });
             };
 
+            const updateChart = () => {
+                if (!chartInstance) return;
+
+                const datalist = props.expenses.combineddata || [];
+
+                const newLabels = datalist.map((_, index) => `Value ${index + 1}`);
+
+                const newData = datalist.map(entry => parseFloat(entry.value));
+
+                let processedData = [];
+                let balancedData = 0;
+                for (let i = 0; i < newData.length; i++) {
+                    balancedData = balancedData + newData[i];
+                    processedData.push(balancedData);
+                }
+
+                chartInstance.data.labels = newLabels;
+                chartInstance.data.datasets[0].data = processedData;
+                chartInstance.data.datasets[0].pointBackgroundColor = pointColors
+
+                chartInstance.update();
+
+            };
+
             onMounted(() => {
                 createChart();
             });
 
-            watch(() => props.expenses, createChart, { deep: true });
+            watch(() => props.expenses, updateChart, { deep: true });
 
             return {
                 chartCanvas

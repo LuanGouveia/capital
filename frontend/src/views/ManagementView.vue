@@ -1,7 +1,7 @@
 <script>
 import ExpenseForm from '@/components/ExpenseForm.vue';
 import ExpenseChart from '@/components/ExpenseChart.vue';
-import { ref, onMounted } from 'vue';
+import {ref, onMounted } from 'vue';
 
 export default {
 
@@ -14,44 +14,29 @@ export default {
 
     setup() {
 
-        const expenses = ref([]); 
+        const expenses = ref([]);
 
-        const fetchExpenses = async () => {
-
-            try {
-
-                const token = localStorage.getItem('token');
-
-                const response = await fetch('http://localhost:3000/balance/getValues', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        authorization: `Bearer ${token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch expenses');
+        async function addExpense() {
+            const response = await fetch('http://localhost:3000/balance/getValues', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${localStorage.getItem('token')}`
                 }
+            });
 
+            if (response.ok) {
                 expenses.value = await response.json();
-                
-            } catch (error) {
-                console.error('Error fetching expenses:', error);
+            } else {
+                console.error('Failed to fetch expenses');
             }
-        };
+        };  
 
-         const addExpenseToList = (newExpense) => {
-            expenses.value.push(newExpense);
-        };
-
-        onMounted(() => {
-            fetchExpenses();
-        });
+        onMounted(addExpense);
 
         return {
             expenses,
-            addExpenseToList,
-            fetchExpenses
+            addExpense
         };
     }
 }
@@ -63,7 +48,7 @@ export default {
 
         <div class="form-container">
 
-            <ExpenseForm @addExpense="addExpenseToList" />
+            <ExpenseForm @addExpense="addExpense" />
 
         </div>
 

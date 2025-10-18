@@ -92,6 +92,7 @@
 </template>
 
 <script>
+
     export default {
 
         name: "ExpenseForm",
@@ -170,7 +171,7 @@
 
                     const responseData = await response.json();
                     console.log('Server response:', responseData);
-                    this.$emit('expense-added', responseData);
+                    this.$emit('addExpense', responseData);
 
                 } catch (error) {
                     console.error('Error adding expense:', error);
