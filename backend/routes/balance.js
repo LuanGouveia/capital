@@ -63,8 +63,8 @@ router.get("/getValues", authenticateToken, async function (req, res, next) {
         const combineddata = [];
         rows.forEach((row) => {
             combineddata.push({
-                profitorexpense: row.profitorexpense,
-                value: row.profitorexpense == "profit" ? parseFloat(row.value) : parseFloat(row.value) * -1,
+                profitorexpense: row.profitOrExpense,
+                value: row.profitOrExpense == "profit" ? parseFloat(row.value) : parseFloat(row.value) * -1,
             });
         });
 
