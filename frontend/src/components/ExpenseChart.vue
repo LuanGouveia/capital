@@ -128,6 +128,16 @@
                     processedData.push(balancedData);
                 }
 
+                pointColors = []
+                for (let i = 0 ; i < processedData.length ; i++){
+                    if(processedData[i] >= 0){
+                        pointColors.push("#4caf50")
+                    }
+                    else{
+                        pointColors.push("#f44336")
+                    }
+                }
+
                 chartInstance.data.labels = newLabels;
                 chartInstance.data.datasets[0].data = processedData;
                 chartInstance.data.datasets[0].pointBackgroundColor = pointColors
