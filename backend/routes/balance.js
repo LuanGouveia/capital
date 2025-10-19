@@ -33,7 +33,7 @@ router.post("/addValue", authenticateToken, async function (req, res, next) {
     try {
         console.log("Recebido para adicionar valor:", userId, req.body);
 
-        const [result] = await pool.execute("insert into balance(userId, profitorexpense, expensetype, category, value, description) values (?,?,?,?,?,?)", [
+        const [result] = await pool.execute("insert into balance(userId, profitOrExpense, expensetype, category, value, description) values (?,?,?,?,?,?)", [
             userId,
             profitorexpense,
             expenseType,
