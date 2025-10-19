@@ -17,7 +17,7 @@ export default {
         const expenses = ref([]);
 
         async function addExpense() {
-            const response = await fetch('http://localhost:3000/balance/getValues', {
+            const response = await fetch('https://capital-production-4fc5.up.railway.app/balance/getValues', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default {
         justify-content: space-around;
         align-items: center;
         width: 100%;
-        height: 100vh;
+        height: 91.5vh;
         background-color: rgb(1, 11, 5);
     }
 

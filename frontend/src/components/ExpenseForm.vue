@@ -31,7 +31,6 @@
                     <label class="label number">VALUE:</label>
 
                     <div class="control number-input">
-                        <span>$</span>
                         <input type="number" required v-model="value" />
                     </div>
 
@@ -52,9 +51,9 @@
 
             </div>
   
-            <div class="field">
+            <div class="field secondsection">
 
-                <label class="label">Category</label> 
+                <label class="label number">Category</label> 
                 <div class="control">
                     <select name="forma" id="forma" v-model="category" required>
                         <option value="Lazer">Lazer</option>
@@ -66,21 +65,17 @@
                     </select>
                 </div>
 
-            </div>
-
-            <div class="field">
-
-                <div class="control">
-                    <label for="desc">Describe your spent/profit</label>
-                    <input type="text" name="desc" id="desc" placeholder="Description" required v-model="desc" />
+                <div class="control description">
+                    <label for="desc" class="">Describe your spent/profit</label>
+                    <textarea name="desc" id="desc" placeholder="Here" required v-model="desc" />
                 </div>
 
             </div>
 
-            <div class="field">
+            <div class="fieldbutton">
 
                 <div class="control">
-                    <button class="button is-primary">Add</button>
+                    <button class="button is-primary">Submit</button>
                 </div>
 
             </div>
@@ -153,7 +148,7 @@
                         throw new Error('No token found, user might not be authenticated');
                     }
 
-                    const response = await fetch('http://localhost:3000/balance/addValue', {
+                    const response = await fetch('https://capital-production-4fc5.up.railway.app/balance/addValue', {
 
                         method: 'POST',
 
@@ -370,6 +365,21 @@
     .number {
         font-size: 1.4rem;
         font-weight: 300;
+    }
+
+    .description{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .secondsection {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    .fieldbutton{
+        text-align: center;
     }
 
 </style>

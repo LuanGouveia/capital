@@ -44,7 +44,7 @@
 
                 try {
 
-                    const response = await fetch('http://localhost:3000/users/login', {
+                    const response = await fetch('https://capital-production-4fc5.up.railway.app/users/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
