@@ -4,24 +4,21 @@
         <form @submit.prevent="addExpense()">
 
             <div class="field">
-
                 <div class="control switch-container">
-
                     <label class="switch">
-
                         <input type="checkbox" v-model="isProfit">
 
+                        <span class="label-container">
+                            <span class="label-text left-label">EXPENSE</span>
+                            <span class="label-text right-label">PROFIT</span>
+                        </span>
+                        
                         <span class="slider">
-                            <span class="slider-inner" >
-                                <span class="state spent">EXPENSE</span>
-                                <span class="state profit">PROFIT</span>
-                            </span>
+                            <span class="slider-fill"></span>
                         </span>
 
                     </label>
-
                 </div>
-
             </div>
 
             <div class="firstsection">
@@ -178,6 +175,7 @@
 </script>
 
 <style scoped>
+    /* Seu container e switch */
     .switch-container {
         display: flex;
         justify-content: center;
@@ -189,8 +187,11 @@
         display: inline-block;
         width: 400px;
         height: 50px;
-        position: relative;
+        /* IMPORTANTE: position: relative precisa estar no pai para posicionar os filhos */
         cursor: pointer;
+        border-radius: 25px; /* Arredondado para visualização */
+        background-color: #ccc; /* Cor de fundo padrão/neutra */
+        overflow: hidden; /* Para garantir que o slider-fill não saia */
     }
 
     .switch input {
@@ -198,54 +199,73 @@
         width: 0;
         height: 0;
         position: absolute;
-        top: 0;
-        left: 0;
     }
 
-    .slider {
-        display: block;
+    /* ---------------------------------------------------- */
+    /* NOVO: Container dos Rótulos (Texto Fixo)             */
+    /* ---------------------------------------------------- */
+    .label-container {
+        position: absolute; /* Permite que o slider se mova por baixo */
+        display: flex;
         width: 100%;
         height: 100%;
-        border-radius: 20px;
-        overflow: hidden;
-        user-select: none;
+        z-index: 2; /* Fica acima do preenchimento de cor */
     }
 
-    .slider-inner {
-        display: flex;
-        width: 200%;
-        height: 100%;
-        transform: translateX(0);
-        transition: transform 0.32s;
-    }
-
-    .state{
+    .label-text {
         width: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: black;
         font-weight: 1000;
         font-size: 28px;
         text-transform: uppercase;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Cor Padrão do Texto (Inativo) */
+        color: #333; 
+        transition: color 0.32s;
+        user-select: none;
+    }
+    
+    /* ---------------------------------------------------- */
+    /* NOVO: O Preenchimento de Cor (Elemento Móvel)        */
+    /* ---------------------------------------------------- */
+    .slider-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%; /* Ocupa exatamente metade do container */
         height: 100%;
-        box-sizing: border-box;
+        border-radius: 25px;
+        transition: transform 0.32s, background-color 0.32s;
+        z-index: 1; /* Fica abaixo dos textos fixos */
     }
 
-    .state.profit{
-        background-color: #28f321;
+    /* ESTADO INICIAL (isProfit: false / EXPENSE ativo) */
+    .slider-fill {
+        transform: translateX(0); /* Posição à esquerda */
+        background-color: #f32121; /* Vermelho Expense */
+    }
+    
+    /* Mudar a cor do texto ativo para Branco */
+    .switch input:not(:checked) ~ .label-container .left-label {
+        color: white; 
     }
 
-    .state.spent{
-        background-color: #f32121;
+    /* ESTADO FINAL (isProfit: true / PROFIT ativo) */
+    .switch input:checked ~ .slider .slider-fill {
+        transform: translateX(100%); /* Move para a direita (50% do total = 100% do seu próprio tamanho) */
+        background-color: #28f321; /* Verde Profit */
     }
-
-    .switch input:checked + .slider .slider-inner {
-        transform: translateX(-50%);
+    
+    /* Mudar a cor do texto ativo para Branco */
+    .switch input:checked ~ .label-container .right-label {
+        color: white; 
     }
-
-    .switch input:focus + .slider {
+    
+    /* Estilos de foco (mantidos) */
+    .switch input:focus + .label-container + .slider {
+         /* Ajuste o seletor para pegar o novo elemento slider */
         outline: 2px solid rgba(0,0,0,0.08);
         outline-offset: 2px;
         box-shadow: 0 0 0 3px rgba(39,174,96,0.12);
