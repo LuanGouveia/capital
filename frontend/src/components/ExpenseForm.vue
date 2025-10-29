@@ -10,7 +10,7 @@
 
                         <span class="label-container">
                             <span class="label-text left-label">EXPENSE</span>
-                            <span class="label-text right-label">PROFIT</span>
+                            <span class="label-text right-label">EARNING</span>
                         </span>
                         
                         <span class="slider">

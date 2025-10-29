@@ -4,7 +4,7 @@
         <h2>Spent's/Profit's Summary</h2>
 
         <div class="chart-container">
-            <canvas ref="chartCanvas"></canvas>
+            <canvas ref="chartCanvas" style="background-color: rgba(255, 255, 255, 0.8)"></canvas>
         </div>
 
     </div>
