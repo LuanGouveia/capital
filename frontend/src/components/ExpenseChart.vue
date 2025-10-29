@@ -4,7 +4,7 @@
         <h2>Spent's/Profit's Summary</h2>
 
         <div class="chart-container">
-            <canvas ref="chartCanvas" style="background-color: rgba(255, 255, 255, 0.8)"></canvas>
+            <canvas ref="chartCanvas" ></canvas>
         </div>
 
     </div>
@@ -169,7 +169,7 @@
     }
 
     .chart-container {
-        background-color: #3d3131;  
+        background-color: #696060;  
         width: 95%;
         height: 70%;
         border-radius: 8px;
