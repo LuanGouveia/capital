@@ -1,7 +1,7 @@
 <template>
     <div class="balance-chart">
 
-        <h2>Spent's/Profit's Summary</h2>
+        <h2 class="title">Spent's/Earning's Summary</h2>
 
         <div class="chart-container">
             <canvas ref="chartCanvas" ></canvas>
@@ -163,13 +163,13 @@
 
     .balance-chart {
         width: 100%;
-        color: white;
+        color: rgb(138, 28, 28);
         height: 100%;
 
     }
 
     .chart-container {
-        background-color: #696060;  
+        background-color: #484948;  
         width: 95%;
         height: 70%;
         border-radius: 8px;
@@ -185,8 +185,8 @@
         margin-bottom: 1rem;
         margin-right: 4rem;
         font-weight: 600;
-        font-size: 1.5rem;
-        color: white;
+        font-size: 2rem;
+        color:#e6c73b;
         text-shadow: 1px 1px 2px black;
     }
 </style>

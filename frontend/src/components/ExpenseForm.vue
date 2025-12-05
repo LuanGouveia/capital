@@ -145,7 +145,7 @@
                         throw new Error('No token found, user might not be authenticated');
                     }
 
-                    const response = await fetch('https://capital-production-4fc5.up.railway.app/balance/addValue', {
+                    const response = await fetch('http://localhost:5000/balance/addValue', {
 
                         method: 'POST',
 
@@ -175,7 +175,6 @@
 </script>
 
 <style scoped>
-    /* Seu container e switch */
     .switch-container {
         display: flex;
         justify-content: center;
@@ -187,11 +186,10 @@
         display: inline-block;
         width: 400px;
         height: 50px;
-        /* IMPORTANTE: position: relative precisa estar no pai para posicionar os filhos */
         cursor: pointer;
-        border-radius: 25px; /* Arredondado para visualização */
-        background-color: #ccc; /* Cor de fundo padrão/neutra */
-        overflow: hidden; /* Para garantir que o slider-fill não saia */
+        border-radius: 25px;
+        background-color: #ccc;
+        overflow: hidden;
     }
 
     .switch input {
@@ -201,15 +199,12 @@
         position: absolute;
     }
 
-    /* ---------------------------------------------------- */
-    /* NOVO: Container dos Rótulos (Texto Fixo)             */
-    /* ---------------------------------------------------- */
     .label-container {
-        position: absolute; /* Permite que o slider se mova por baixo */
+        position: absolute;
         display: flex;
         width: 100%;
         height: 100%;
-        z-index: 2; /* Fica acima do preenchimento de cor */
+        z-index: 2;
     }
 
     .label-text {
@@ -221,51 +216,41 @@
         font-size: 28px;
         text-transform: uppercase;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        /* Cor Padrão do Texto (Inativo) */
         color: #333; 
         transition: color 0.32s;
         user-select: none;
     }
-    
-    /* ---------------------------------------------------- */
-    /* NOVO: O Preenchimento de Cor (Elemento Móvel)        */
-    /* ---------------------------------------------------- */
+
     .slider-fill {
         position: absolute;
         top: 0;
         left: 0;
-        width: 50%; /* Ocupa exatamente metade do container */
+        width: 50%;
         height: 100%;
         border-radius: 25px;
         transition: transform 0.32s, background-color 0.32s;
-        z-index: 1; /* Fica abaixo dos textos fixos */
+        z-index: 1; 
     }
 
-    /* ESTADO INICIAL (isProfit: false / EXPENSE ativo) */
     .slider-fill {
-        transform: translateX(0); /* Posição à esquerda */
-        background-color: #f32121; /* Vermelho Expense */
+        transform: translateX(0);
+        background-color: #f32121; 
     }
     
-    /* Mudar a cor do texto ativo para Branco */
     .switch input:not(:checked) ~ .label-container .left-label {
         color: white; 
     }
 
-    /* ESTADO FINAL (isProfit: true / PROFIT ativo) */
     .switch input:checked ~ .slider .slider-fill {
-        transform: translateX(100%); /* Move para a direita (50% do total = 100% do seu próprio tamanho) */
-        background-color: #28f321; /* Verde Profit */
+        transform: translateX(100%);
+        background-color: #28f321; 
     }
     
-    /* Mudar a cor do texto ativo para Branco */
     .switch input:checked ~ .label-container .right-label {
         color: white; 
     }
     
-    /* Estilos de foco (mantidos) */
     .switch input:focus + .label-container + .slider {
-         /* Ajuste o seletor para pegar o novo elemento slider */
         outline: 2px solid rgba(0,0,0,0.08);
         outline-offset: 2px;
         box-shadow: 0 0 0 3px rgba(39,174,96,0.12);

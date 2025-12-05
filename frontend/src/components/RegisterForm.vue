@@ -50,7 +50,7 @@
 
                 try {
 
-                    const response = await fetch('https://capital-production-4fc5.up.railway.app/users/register', {
+                    const response = await fetch('http://localhost:5000/users/register', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

@@ -3,19 +3,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 import RegisterView from '@/views/RegisterView.vue'
 import ManagementView from '@/views/ManagementView.vue'
 import LoginView from '@/views/LoginView.vue'
-
-const HomeView =  {
-  template: "<div><template>Welcome to Capital.</template></div>"
-}
+import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {path: '/', name: 'home', component: HomeView},
-    {path: '/register', name: 'register', component: RegisterView},
+    { path: '/', name: 'home', component: HomeView },
+    { path: '/register', name: 'register', component: RegisterView },
     {
-      path: '/management', 
-      name: 'management', 
+      path: '/management',
+      name: 'management',
       component: ManagementView,
       beforeEnter: (to, from, next) => {
         const token = localStorage.getItem('token')
@@ -24,9 +21,9 @@ const router = createRouter({
         } else {
           next()
         }
-      }
+      },
     },
-    {path: '/login', name: 'login', component: LoginView}
+    { path: '/login', name: 'login', component: LoginView },
   ],
 })
 

@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { store } from '@/store';
+
     export default {
 
         name: "LoginForm",
@@ -44,7 +46,7 @@
 
                 try {
 
-                    const response = await fetch('https://capital-production-4fc5.up.railway.app/users/login', {
+                    const response = await fetch('http://localhost:5000/users/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -56,10 +58,13 @@
                     if (response.ok) {
 
                         const data = await response.json();
-                        console.log('Login successful:', data);
 
                         localStorage.setItem('token', data.token);
-                        this.$router.push('/management');
+                        localStorage.setItem('username', data.username)
+                        store.isLoggedIn = true;
+                        store.username = data.username;
+                        this.$router.push('/management');   
+
                         
                     } else {
 

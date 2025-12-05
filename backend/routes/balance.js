@@ -73,12 +73,70 @@ router.get("/getValues", authenticateToken, async function (req, res, next) {
             combineddata,
         };
 
-        console.log("Valores buscados para o usuário:", user_infos);
-
         res.status(200).json(user_infos);
     } catch (error) {
         console.error("Erro ao buscar valores:", error);
         res.status(500).json({ error: "Erro ao buscar valores" });
+    }
+});
+
+router.get("/transactions", authenticateToken, async function (req, res) {
+    const userId = req.user?.userId;
+
+    try {
+        const [rows] = await pool.execute("SELECT * FROM balance WHERE userId = ? ORDER BY created_at DESC", [userId]);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error("Erro ao buscar valores:", error);
+        res.status(500).json({ error: "Erro ao buscar valores" });
+    }
+});
+
+router.delete("/delete/:id", authenticateToken, async function (req, res) {
+    const transactionId = req.params.id;
+    const userId = req.user.userId;
+
+    try {
+        const [result] = await pool.execute("DELETE FROM balance WHERE id = ? AND userId = ?", [transactionId, userId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Registro não encontrado ou sem permissão." });
+        }
+
+        console.log("SUCESSO: Item deletado.");
+        res.json({ message: "Transação deletada com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao deletar:", error);
+        res.status(500).json({ error: "Erro ao deletar transação" });
+    }
+});
+
+router.put("/update/:id", authenticateToken, async function (req, res) {
+    const transactionId = req.params.id;
+    const userId = req.user.userId;
+
+    const { category, value, description, expenseType, profitOrExpense } = req.body;
+
+    try {
+        const [result] = await pool.execute(
+            `UPDATE balance 
+            SET category = ?, 
+            value = ?, 
+            description = ?, 
+            expenseType = ?,
+            profitOrExpense = ?
+            WHERE id = ? AND userId = ?`,
+            [category, value, description, expenseType, profitOrExpense, transactionId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Registro não encontrado ou sem permissão." });
+        }
+
+        return res.status(200).json({ message: "Atualizado com sucesso" });
+    } catch (error) {
+        console.error("Erro ao atualizar:", error);
+        res.status(500).json({ error: "Erro ao atualizar transação" });
     }
 });
 

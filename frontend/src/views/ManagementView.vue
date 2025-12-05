@@ -1,83 +1,172 @@
 <script>
 import ExpenseForm from '@/components/ExpenseForm.vue';
 import ExpenseChart from '@/components/ExpenseChart.vue';
-import {ref, onMounted } from 'vue';
+import TransactionTable from '@/components/TransactionTable.vue';
+import EditModal from '@/components/EditModal.vue'; 
+import { ref, onMounted } from 'vue';
 
 export default {
-
     name: "ManagementView",
-
     components: {
         ExpenseForm,
-        ExpenseChart
+        ExpenseChart,
+        TransactionTable,
+        EditModal 
     },
-
     setup() {
+        const chartData = ref({});
+        const tableData = ref([]);
+        
+        const showModal = ref(false);
+        const itemToEdit = ref(null);
 
-        const expenses = ref([]);
+        const token = localStorage.getItem('token');
 
-        async function addExpense() {
-            const response = await fetch('https://capital-production-4fc5.up.railway.app/balance/getValues', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    authorization: `Bearer ${localStorage.getItem('token')}`
+        async function fetchChartData() {
+            try {
+                const response = await fetch('http://localhost:5000/balance/getValues', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    chartData.value = await response.json();
                 }
-            });
-
-            if (response.ok) {
-                expenses.value = await response.json();
-            } else {
-                console.error('Failed to fetch expenses');
+            } catch (error) {
+                console.error('Erro ao buscar dados do gráfico:', error);
             }
-        };  
+        }
 
-        onMounted(addExpense);
+        async function fetchTableData() {
+            try {
+                const response = await fetch('http://localhost:5000/balance/transactions', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    tableData.value = await response.json();
+                }
+            } catch (error) {
+                console.error('Erro ao buscar histórico:', error);
+            }
+        }
+
+        function refreshAll() {
+            fetchChartData();
+            fetchTableData(); 
+        }
+
+        async function handleDelete(id) {
+            try {
+                const response = await fetch(`http://localhost:5000/balance/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    }
+                });
+
+                if (response.ok) {
+                    alert("Item excluído com sucesso!");
+                    refreshAll();
+                } else {
+                    alert("Erro ao excluir item.");
+                }
+            } catch (error) {
+                console.error("Erro na requisição de delete:", error);
+            }
+        }
+
+        function openEditModal(item) {
+            itemToEdit.value = item; 
+            showModal.value = true;  
+        }
+
+        async function saveEdit(updatedItem) {
+            try {
+                const response = await fetch(`http://localhost:5000/balance/update/${updatedItem.id}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(updatedItem)
+                });
+
+                if (response.ok) {
+                    alert("Atualizado com sucesso!");
+                    showModal.value = false; 
+                    refreshAll(); 
+                } else {
+                    const errorData = await response.json();
+                    alert("Erro: " + errorData.error);
+                }
+            } catch (error) {
+                console.error("Erro ao atualizar:", error);
+            }
+        }
+
+        onMounted(() => {
+            refreshAll();
+        });
 
         return {
-            expenses,
-            addExpense
+            chartData,
+            tableData,
+            refreshAll,
+            handleDelete,
+            showModal,
+            itemToEdit,
+            openEditModal,
+            saveEdit
         };
     }
 }
 </script>
 
 <template>
-
-    <div class="management-view">
-
-        <div class="form-container">
-
-            <ExpenseForm @addExpense="addExpense" />
-
+    <div class="page-container">
+        
+        <div class="management-view">
+            <div class="form-container">
+                <ExpenseForm @addExpense="refreshAll" />
+            </div>
+            <div class="chart-container">
+                <ExpenseChart :expenses="chartData" />
+            </div>
         </div>
 
-        <div class="chart-container">
-
-            <ExpenseChart :expenses="expenses" />
-
+        <div class="table-section">
+            <TransactionTable 
+                :transactions="tableData" 
+                @delete-transaction="handleDelete"
+                @edit-transaction="openEditModal" 
+            />
         </div>
+
+        <EditModal 
+            :isOpen="showModal"
+            :transaction="itemToEdit"
+            @close="showModal = false"
+            @save="saveEdit"
+        />
 
     </div>
-
 </template>
 
 <style scoped>
-    .management-view {
+    .page-container {
+        background-color: rgb(1, 11, 5);
+        min-height: 91.5vh;
         display: flex;
+        flex-direction: column;
+    }
+    .management-view {
+        display: flex; 
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        width: 100%;
-        height: 91.5vh;
-        background-color: rgb(1, 11, 5);
+        width: 100%; 
+        padding: 20px 0;
     }
-
-    .form-container {
-        width: 40%;
-    }
-
-    .chart-container {
-        width: 60%;
-    }
+    .form-container { width: 40%; }
+    .chart-container { width: 60%; }
+    .table-section { width: 90%; margin: 0 auto; padding-bottom: 50px; }
 </style>
