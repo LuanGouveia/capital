@@ -28,7 +28,7 @@
                     <label class="label number">VALUE:</label>
 
                     <div class="control number-input">
-                        <input type="number" required v-model="value" />
+                        <input type="number" required v-model="value" step="0.01" placeholder="0,00" />
                     </div>
 
                 </div>
@@ -258,7 +258,7 @@
 
     .formexpense {
         width: 100%;
-        height: 100%;
+        height: 70vh;
         padding: 1rem;
         color: white;
         margin: 0 auto;

@@ -164,14 +164,14 @@
     .balance-chart {
         width: 100%;
         color: rgb(138, 28, 28);
-        height: 100%;
+        height: 70vh;
 
     }
 
     .chart-container {
         background-color: #484948;  
         width: 95%;
-        height: 70%;
+        height: 100%;
         border-radius: 8px;
     }
 

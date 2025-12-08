@@ -165,6 +165,7 @@ export default {
         align-items: center;
         width: 100%; 
         padding: 20px 0;
+        height: 80vh;
     }
     .form-container { width: 40%; }
     .chart-container { width: 60%; }

@@ -8,9 +8,8 @@
                     <th>Value</th>
                     <th>Category</th>
                     <th>Type</th>
-                    <th>Expense/profit</th>
+                    <th>Expense/Earning</th>
                     <th>Description</th>
-                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -28,8 +27,6 @@
                     </td>
 
                     <td>{{ item.description }}</td>
-
-                    <td>{{ formatDate(item.created_at) }}</td>
 
                     <td>
                         <button @click="onEdit(item)" class="btn-edit">✏️</button>
@@ -84,7 +81,6 @@ export default {
     }
 
     .table-container {
-        margin-top: 0;
         width: 100%;
         overflow-x: auto; 
     }
