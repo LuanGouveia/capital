@@ -32,7 +32,7 @@
     const email = ref('')
     const password = ref('')
 
-    const router = useRouter;
+    const router = useRouter();
 
     async function Login() {
                 

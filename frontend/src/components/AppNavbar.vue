@@ -11,11 +11,11 @@
             </div>  
             <div class="navbar-end">
 
-                <template v-if="auth.isLoggedIn">
+                <template v-if="store.isLoggedIn">
                     <router-link to="/management" class="navbar-item">Management</router-link>
                     <div class="user-menu-container">
                         <div class="navbar-item user-name" @click="toggleMenu">
-                            Hello, {{ auth.username }} ▾
+                            Hello, {{ store.username }} ▾
                         </div>
                         <div v-if="isMenuOpen" class="dropdown-menu">
                             <a @click="logout" class="dropdown-item">Exit (logout)</a>
@@ -32,43 +32,55 @@
     </nav>
 </template>
 
-<script>
-import { store } from '@/store';
+<script setup>
+    import { ref, onMounted } from 'vue';
+    import { useRouter, useRoute } from 'vue-router'; 
+    import { jwtDecode } from "jwt-decode";
+    import { store } from '@/store'
+    const router = useRouter();
+    const route = useRoute();
 
-    export default {
-        name: "AppNavbar",
+    const isMenuOpen = ref(false);
 
-        data(){
-            return{
-                auth:store,
-                isMenuOpen:false
-            };
-        },
+    function toggleMenu() {
+        isMenuOpen.value = !isMenuOpen.value;
+    }
 
-        mounted(){
-            const token = localStorage.getItem("token");
-            const username = localStorage.getItem("username");
-            if (token && username){
-                this.auth.isLoggedIn = true;
-                this.auth.username = username;
-            };
-        },
-        methods: {
-            logout() {
-                localStorage.removeItem("token");
-                localStorage.removeItem('username');
+    function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem('username');
 
-                this.auth.isLoggedIn = false;
-                this.auth.username = "";
+        store.isLoggedIn = false;
+        store.username = "";
+        isMenuOpen.value = false;
 
-                this.isMenuOpen = false;
-        },
+        if (route.path === '/management') {
+            router.push('/login');
+        }
+    }
 
-            toggleMenu() {
-                this.isMenuOpen = !this.isMenuOpen
+    onMounted(() => {
+        const token = localStorage.getItem("token");
+        const username = localStorage.getItem("username");
+
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                const currentTime = Date.now() / 1000;
+
+                if (decoded.exp < currentTime) {
+                    console.log("Token expirado (Navbar). Deslogando...");
+                    logout();
+                } else {
+                    store.isLoggedIn = true;
+                    store.username = username;
+                }
+            } catch (error) {
+                console.error("Token inválido:", error);
+                logout();
             }
         }
-    };
+    });
 </script>
 
 <style scoped>

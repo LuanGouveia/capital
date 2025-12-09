@@ -17,13 +17,21 @@
         <div class="logindata">
 
             <h1 class="right-title">Login into your acccount</h1>
-            <button>Click here</button>
+            <button v-on:click="Redirect()">Click here</button>
 
         </div>
 
     </div>
 
 </template>
+
+<script setup>
+    import { useRouter } from 'vue-router';
+    const router = useRouter()
+    async function Redirect() {
+        router.push('/management')
+    }
+</script>
 
 <style scoped>
 
