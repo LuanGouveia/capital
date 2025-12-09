@@ -1,18 +1,21 @@
 <template>
 
-    <div>
+    <div class="login-container">
+        <h2>Acess your account</h2>
 
-        <form @submit.prevent="handleSubmit">
+        <form @submit.prevent="Login">
 
-            <div>
-                <input type="text" id="email" v-model="email" required placeholder="Email" />
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" v-model="email" required />
             </div>
 
-            <div>
-                <input placeholder="Password" type="password" id="password" v-model="password" required />
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" v-model="password" required />
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit">Submit</button>
 
         </form>
 
@@ -20,95 +23,106 @@
 
 </template>
 
-<script>
-import { store } from '@/store';
+<script setup>
+    import { store } from '@/store';
+    import axios from 'axios';
+    import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
 
-    export default {
+    const email = ref('')
+    const password = ref('')
 
-        name: "LoginForm",
+    const router = useRouter;
 
-        data() {
-            return {
-                email: '',
-                password: ''
-            };
-        },
-
-        methods: {
-            async handleSubmit() {
-
-                console.log('Form submitted with:', this.email, this.password);
+    async function Login() {
                 
-                const userData = {
-                    email: this.email,
-                    password: this.password
-                };
+            const userData = {
+                email: email.value,
+                password: password.value
+            };
 
-                try {
-
-                    const response = await fetch('http://localhost:5000/users/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-
-                        body: JSON.stringify(userData)
-                    });
-
-                    if (response.ok) {
-
-                        const data = await response.json();
-
-                        localStorage.setItem('token', data.token);
-                        localStorage.setItem('username', data.username)
-                        store.isLoggedIn = true;
-                        store.username = data.username;
-                        this.$router.push('/management');   
-
-                        
-                    } else {
-
-                        const errorData = await response.json();
-                        console.error('Login failed:', errorData);
-                        
-                    }
-
-                } catch (error) {
-                    console.error('Error during login:', error);
-                   
+            try {
+                const response = await axios.post('http://localhost:5000/users/login', userData);
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('username', response.data.username)
+                store.isLoggedIn = true;
+                store.username = response.data.username;
+                router.push('/management');   
+            }catch(error){
+                console.error('Login error:', error);
+                if(error.response){
+                    alert(error.response.data.error ||"Incorrect user or password")
+                }else if(error.request)  {
+                    alert("Conecction error")
+                }else{
+                    alert("Unexpected error")
                 }
             }
-        }
-    };
+    }
 </script>
 
 <style scoped>
-    form {
-        display: flex;
-        flex-direction: column;
-        width: 300px;
-        margin: auto;
+    h2{
+        font-size: 90px;
+        text-align: center;
+        color: rgb(94, 58, 7);
+        margin-bottom: 20px;
     }
 
-    div {
-        margin-bottom: 15px;
+    .form-group{
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0;
+    }
+
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     input {
-        width: 100%;
+        width: 20vw;
+        height: 5vh;
         padding: 10px;
-        box-sizing: border-box;
+        border-radius: 18px;
+        border: 1px solid #000000;
+        background-color: rgb(94, 58, 7);
+        color: white;
+        font-weight: bold;
+    }
+
+    .error-message{
+        color: red;
+        font-size: 0.8rem;
+        margin-top: 0;
+        margin-bottom: 0;
     }
 
     button {
         padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
+        font-size: 1em;
+        background-color: rgb(228, 167, 83);
+        color: rgb(0, 0, 0);
+        border: 2px solid #000000;
         cursor: pointer;
+        border-radius: 1rem;
+        margin-top: 10px;
+        transition: all 0.3s;
+        font-weight: bold;
+        text-transform: uppercase;
+        width: 100%;
     }
 
-    button:hover {
-        background-color: #45a049;
+    label {
+        font-size: 0.9rem;          
+        font-weight: 800;           
+        color: rgb(94, 58, 7);     
+        margin-bottom: 0;        
+        display: block;            
+        letter-spacing: 0.5px;
+        margin-left: 10px;         
+        cursor: pointer;           
+        text-transform: uppercase; 
     }
 </style>
