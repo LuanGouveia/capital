@@ -24,8 +24,8 @@
 </template>
 
 <script setup>
+    import api from '@/services/api';
     import { store } from '@/store';
-    import axios from 'axios';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
 
@@ -42,7 +42,7 @@
             };
 
             try {
-                const response = await axios.post('http://localhost:5000/users/login', userData);
+                const response = await api.post('/users/login', userData);
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('username', response.data.username)
                 store.isLoggedIn = true;

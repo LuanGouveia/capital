@@ -84,6 +84,7 @@
 </template>
 
 <script>
+    import { BASE_URL } from '@/services/api';
 
     export default {
 
@@ -145,15 +146,12 @@
                         throw new Error('No token found, user might not be authenticated');
                     }
 
-                    const response = await fetch('http://localhost:5000/balance/addValue', {
-
+                    const response = await fetch(`${BASE_URL}/balance/addValue`, {
                         method: 'POST',
-
                         headers: {
                             'Content-Type': 'application/json',
                             authorization: `Bearer ${token}`
                         },
-
                         body: JSON.stringify(expense)
                     });
 

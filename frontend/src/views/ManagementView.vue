@@ -4,6 +4,7 @@ import ExpenseChart from '@/components/ExpenseChart.vue';
 import TransactionTable from '@/components/TransactionTable.vue';
 import EditModal from '@/components/EditModal.vue'; 
 import { ref, onMounted } from 'vue';
+import { BASE_URL } from '@/services/api';
 
 export default {
     name: "ManagementView",
@@ -24,7 +25,7 @@ export default {
 
         async function fetchChartData() {
             try {
-                const response = await fetch('http://localhost:5000/balance/getValues', {
+                const response = await fetch(`${BASE_URL}/balance/getValues`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -37,7 +38,7 @@ export default {
 
         async function fetchTableData() {
             try {
-                const response = await fetch('http://localhost:5000/balance/transactions', {
+                const response = await fetch(`${BASE_URL}/balance/transactions`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -55,7 +56,7 @@ export default {
 
         async function handleDelete(id) {
             try {
-                const response = await fetch(`http://localhost:5000/balance/delete/${id}`, {
+                const response = await fetch(`${BASE_URL}/balance/delete/${id}`, {
                     method: 'DELETE',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ export default {
 
         async function saveEdit(updatedItem) {
             try {
-                const response = await fetch(`http://localhost:5000/balance/update/${updatedItem.id}`, {
+                const response = await fetch(`${BASE_URL}/balance/update/${updatedItem.id}`, {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',

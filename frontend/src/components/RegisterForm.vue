@@ -54,7 +54,7 @@
 
 <script setup>
     import {ref, computed} from "vue";
-    import axios from "axios";
+    import api from "@/services/api";
 
     const password = ref('')
     const confirmPassword = ref('')
@@ -99,7 +99,7 @@
         }
 
         try {
-            const response = await axios.post("http://localhost:5000/user/register", userData)
+            const response = await api.post("/user/register", userData)
             
             console.log("Success",response.data)
             alert("Account successful created")
